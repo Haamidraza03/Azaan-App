@@ -1,0 +1,10 @@
+body {
+    background-color: #f8f9fa;
+  }
+  h1 {
+    font-weight: bold;
+  }
+  .card {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  
