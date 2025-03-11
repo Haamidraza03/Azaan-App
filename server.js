@@ -56,7 +56,7 @@ function saveCachedTimings(timings) {
 
 async function fetchTimingsFromAPI() {
   const chatSession = model.startChat({ generationConfig, history: [] });
-  const prompt = "Provide ONLY a valid JSON object representing the Namaz timings for Fajr, Zohar, Asar, Maghrib, and Isha in HH:MM 24-hour format in India. Example: {\"Fajr\":\"05:50\", \"Zohar\":\"12:30\", \"Asar\":\"15:45\", \"Maghrib\":\"18:20\", \"Isha\":\"20:00\"}.";
+  const prompt = "Provide ONLY a valid JSON object representing the Namaz timings for Fajr, Zohar, Asar, Maghrib, and Isha in HH:MM 24-hour format in India, Maharashtra. Example: {\"Fajr\":\"05:50\", \"Zohar\":\"12:30\", \"Asar\":\"15:45\", \"Maghrib\":\"18:20\", \"Isha\":\"20:00\"}.";
   const result = await chatSession.sendMessage(prompt);
   const rawText = result.response.text().trim();
   console.log("Raw response from Gemini:", rawText);
