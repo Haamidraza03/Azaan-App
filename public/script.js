@@ -4,7 +4,8 @@ let countdownInterval = null;
 
 async function fetchPrayerTimings() {
   try {
-    const response = await fetch("http://localhost:3000/api/namaz_timings");
+    // Use a relative URL instead of an absolute localhost URL.
+    const response = await fetch("/api/namaz_timings");
     const data = await response.json();
     prayerTimings = data;
     updateTimingsUI();
@@ -13,6 +14,7 @@ async function fetchPrayerTimings() {
     console.error("Error fetching prayer timings:", error);
   }
 }
+
 
 function updateTimingsUI() {
   const tbody = document.querySelector("#timingsTable tbody");
