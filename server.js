@@ -7,6 +7,8 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Enable CORS if needed (Render usually doesn’t require it for the same domain)
 app.use(cors());
 
 // Serve static files from the public folder
@@ -54,7 +56,7 @@ function saveCachedTimings(timings) {
 
 async function fetchTimingsFromAPI() {
   const chatSession = model.startChat({ generationConfig, history: [] });
-  const prompt = "Provide ONLY a valid JSON object representing the Namaz timings for Fajr, Zohar, Asar, Maghrib, and Isha in HH:MM 24-hour format in India. Example: {\"Fajr\":\"05:50\", \"Zohar\":\"12:30\", \"Asar\":\"15:45\", \"Maghrib\":\"18:20\", \"Isha\":\"20:00\"}.";
+  const prompt = "Provide ONLY a valid JSON object representing the Namaz timings for Fajr, Zohar, Asar, Maghrib, and Isha in HH:MM 24-hour format. Example: {\"Fajr\":\"05:50\", \"Zohar\":\"12:30\", \"Asar\":\"15:45\", \"Maghrib\":\"18:20\", \"Isha\":\"20:00\"}.";
   const result = await chatSession.sendMessage(prompt);
   const rawText = result.response.text().trim();
   console.log("Raw response from Gemini:", rawText);
@@ -64,7 +66,6 @@ async function fetchTimingsFromAPI() {
     timings = JSON.parse(rawText);
   } catch (jsonErr) {
     console.error("Initial JSON parse failed:", jsonErr);
-    // Attempt to extract JSON substring if there is extra text.
     const jsonStart = rawText.indexOf('{');
     const jsonEnd = rawText.lastIndexOf('}');
     if (jsonStart !== -1 && jsonEnd !== -1) {
@@ -82,7 +83,6 @@ async function fetchTimingsFromAPI() {
   return timings;
 }
 
-// API endpoint to get prayer timings
 app.get('/api/namaz_timings', async (req, res) => {
   try {
     let cache = loadCachedTimings();
