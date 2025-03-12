@@ -4,7 +4,7 @@ let countdownInterval = null;
 
 async function fetchPrayerTimings() {
   try {
-    // Use a relative URL instead of an absolute localhost URL.
+    // Use a relative URL so it works in deployment
     const response = await fetch("/api/namaz_timings");
     const data = await response.json();
     prayerTimings = data;
@@ -14,7 +14,6 @@ async function fetchPrayerTimings() {
     console.error("Error fetching prayer timings:", error);
   }
 }
-
 
 function updateTimingsUI() {
   const tbody = document.querySelector("#timingsTable tbody");
@@ -44,8 +43,9 @@ function scheduleAzaanAlarms() {
     let alarmTime = timeStringToDate(timeStr);
     if (alarmTime <= now) alarmTime.setDate(alarmTime.getDate() + 1);
     const timeDiff = alarmTime - now;
+    // Pass the prayer name to playAzaan so that we can play different audio for Fajr.
     const timerId = setTimeout(() => {
-      playAzaan();
+      playAzaan(prayer);
       updateNextPrayerInfo();
     }, timeDiff);
     scheduledTimers.push(timerId);
@@ -94,9 +94,15 @@ function pad(num) {
   return num.toString().padStart(2, "0");
 }
 
-function playAzaan() {
-  const audio = document.getElementById("azaanAudio");
-  audio.play().catch(err => console.error("Audio playback failed:", err));
+// playAzaan now accepts the prayer name to choose which audio file to play.
+function playAzaan(prayer) {
+  if (prayer === "Fajr") {
+    const audio = document.getElementById("fajrAudio");
+    audio.play().catch(err => console.error("Fajr audio playback failed:", err));
+  } else {
+    const audio = document.getElementById("azaanAudio");
+    audio.play().catch(err => console.error("Audio playback failed:", err));
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
